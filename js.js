@@ -200,6 +200,7 @@ document.getElementById('sbm').onclick = function () {
         checkDate()
     ) {
         postResult(resultOrdersArray);
+        console.log(resultOrdersArray);
     } else {
         alert(
             "Все поля формы должны быть заполнены! \n\n" +

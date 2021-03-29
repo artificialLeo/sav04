@@ -7,7 +7,7 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.listen(4000, () => {
@@ -74,13 +74,63 @@ app.post("/tbl", urlencodedParser, function (req, res) {
 
 // Routed insert and mail (optional)
 
-// app.post("/res", urlencodedParser, function (req, res) {
-//
-//     if(!req.body) return res.sendStatus(400);
-//     const name = req.body.name;
-//     const age = req.body.age;
-//     pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
-//         if(err) return console.log(err);
-//         res.redirect("/");
-//     });
-// });
+app.post("/res", urlencodedParser, function (req, res) {
+
+    if(!req.body) return res.sendStatus(400);
+    const senderMail = req.body.senderMail;
+    const senderFIO = req.body.senderFIO;
+    const startDate = req.body.startDate;
+    const finishDate = req.body.finishDate;
+    const actionComment = req.body.actionComment;
+    const actionInitiator = req.body.actionInitiator;
+    const actionType = req.body.actionType;
+    const actionLocal = req.body.actionLocal;
+    const budgetQuantity = req.body.budgetQuantity;
+    const budgetSize = req.body.budgetSize;
+    const discount = req.body.discount;
+    const budgetFilial = req.body.budgetFilial;
+    const budgetTT = req.body.budgetTT;
+    const addRemoveCSKU = req.body.addRemoveCSKU;
+    const TradeMarketMail = req.body.TradeMarketMail;
+    const ProdName = req.body.ProdName;
+    const MarkName = req.body.MarkName;
+    const order = req.body.order;
+
+    console.log(order);
+    console.log(actionType);
+
+    switch (actionType) {
+        case "CTPR":
+            console.log("CTPR QUERY");
+            break;
+        case "LIVE":
+            console.log("LIVE QUERY");
+            break;
+        case "TRG":
+            console.log("TRG QUERY");
+            break;
+        case "LIVE Товарный":
+            console.log("LIVE Товарный QUERY");
+            break;
+        case "Разовая для Брендов":
+            console.log("Разовая для Брендов QUERY");
+            break;
+        case "Разовая для GCAS":
+            console.log("Разовая для GCAS QUERY");
+            break;
+        case "Контрактная для Брендов":
+            console.log("Контрактная для Брендов QUERY");
+            break;
+        case "Контрактная для GCAS":
+            console.log("Контрактная для GCAS QUERY");
+            break;
+        default:
+            console.log("Nothing found");
+            res.sendStatus(400);
+    }
+
+    // pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
+    //     if(err) return console.log(err);
+    //     res.redirect("/");
+    // });
+});
