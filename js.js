@@ -8,12 +8,14 @@ async function getManagersMail() {
     const response = await fetch('http://localhost:4000/form');
     let result = await response.json();
 
+    console.log(result)
+
     document.getElementById('mn').innerHTML = '<option>Select Manager Mail!</option>';
     for (let i = 0; i < result.length; i++) {
 
         let el = document.createElement('option');
-        el.value = result[i];
-        el.innerText = result[i];
+        el.value = result[i].TradeMarketMail;
+        el.innerText = result[i].TradeMarketMail;
 
         document.getElementById('mn').append(el);
     }
@@ -24,7 +26,7 @@ async function getProd(managerMail) {
         method: "POST",
         headers: {"Accept": "application/json", "Content-Type": "application/json"},
         body: JSON.stringify({
-            TradeMarketMail: managerMail
+            mail: managerMail
         })
     });
     let result = await response.json();
@@ -33,8 +35,8 @@ async function getProd(managerMail) {
     for (let i = 0; i < result.length; i++) {
 
         let el = document.createElement('option');
-        el.value = result[i];
-        el.innerText = result[i];
+        el.value = result[i].ProdName;
+        el.innerText = result[i].ProdName;
 
         document.getElementById('pr').append(el);
     }
@@ -45,8 +47,8 @@ async function getMark(managerMail, prod) {
         method: "POST",
         headers: {"Accept": "application/json", "Content-Type": "application/json"},
         body: JSON.stringify({
-            TradeMarketMail: managerMail,
-            ProdName: prod,
+            mail: managerMail,
+            prod: prod,
         })
     });
     let result = await response.json();
@@ -55,8 +57,8 @@ async function getMark(managerMail, prod) {
     for (let i = 0; i < result.length; i++) {
 
         let el = document.createElement('option');
-        el.value = result[i];
-        el.innerText = result[i];
+        el.value = result[i].MarkName;
+        el.innerText = result[i].MarkName;
 
         document.getElementById('mr').append(el);
     }
@@ -67,9 +69,9 @@ async function getTable(managerMail, prod, mark) {
         method: "POST",
         headers: {"Accept": "application/json", "Content-Type": "application/json"},
         body: JSON.stringify({
-            TradeMarketMail: managerMail,
-            ProdName: prod,
-            MarkName: mark
+            mail: managerMail,
+            prod: prod,
+            mark: mark
         })
     });
     let result = await response.json();
@@ -198,7 +200,6 @@ document.getElementById('sbm').onclick = function () {
         checkDate()
     ) {
         postResult(resultOrdersArray);
-        sendRedirect();
     } else {
         alert(
             "Все поля формы должны быть заполнены! \n\n" +
@@ -207,10 +208,6 @@ document.getElementById('sbm').onclick = function () {
             "Дата начала акции должна быть раньше её конца!"
         )
     }
-}
-
-async function sendRedirect() {
-    const response = await fetch('http://localhost:4000/finish');
 }
 
 async function postResult(resultOrdersArray) {

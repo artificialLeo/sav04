@@ -30,7 +30,7 @@ pool.getConnection(error => {
 
 // Managers mail
 app.get("/form", function(req, res){
-    pool.query("SELECT Distinct TradeMarketMail FROM tbl", function(err, data) {
+    pool.query("SELECT DISTINCT TradeMarketMail FROM tbl", function(err, data) {
         if(err) return console.log(err);
         res.send(data);
     });
@@ -41,7 +41,7 @@ app.post("/prod", urlencodedParser, function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const mail = req.body.mail;
 
-    pool.query("SELECT Distinct ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
+    pool.query("SELECT DISTINCT ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
         if(err) return console.log(err);
         res.send(data);
     });
@@ -51,8 +51,9 @@ app.post("/prod", urlencodedParser, function (req, res) {
 app.post("/mark", urlencodedParser, function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const mail = req.body.mail;
+    const prod = req.body.prod;
 
-    pool.query("SELECT Distinct ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
+    pool.query("SELECT DISTINCT MarkName FROM tbl WHERE TradeMarketMail = ? AND ProdName = ?", [mail, prod], function(err, data) {
         if(err) return console.log(err);
         res.send(data);
     });
@@ -62,8 +63,10 @@ app.post("/mark", urlencodedParser, function (req, res) {
 app.post("/tbl", urlencodedParser, function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const mail = req.body.mail;
+    const prod = req.body.prod;
+    const mark = req.body.mark;
 
-    pool.query("SELECT Distinct ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
+    pool.query("SELECT * FROM tbl WHERE TradeMarketMail = ? AND ProdName = ? AND MarkName = ?", [mail, prod, mark], function(err, data) {
         if(err) return console.log(err);
         res.send(data);
     });
