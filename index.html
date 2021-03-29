@@ -3,9 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <title>Form</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="form.png"/>
     <link rel="stylesheet" href="css.css">
 </head>
 <body id="main">
+
+
+<img src="up.png" alt="to top icon" id="tt">
+
+<form id="form" style="display:flex;
+flex-direction: column">
+
+    <label for="email">Ваш E-mail:&nbsp;
+        <input type="email" name="email" id="email" required class="gp">
+    </label>
+
+    <label for="fio">Введите ваше ФИО через пробел:&nbsp;
+        <input type="text" name="fio" id="fio" required class="gp">
+    </label>
+
+    <label for="sdate">Дата Начала Акции:&nbsp;
+        <input type="date" id="sdate" name="sdate" required class="gp">
+    </label>
+
+    <label for="fdate">Дата Конца Акции:&nbsp;
+        <input type="date" id="fdate" name="fdate" required class="gp">
+    </label>
+
+    <label for="acomment">Коментарий к акции:&nbsp;
+        <textarea id="acomment" name="acomment" required class="gp"> </textarea>
+    </label>
+
+    <label for="aInitiator">Инициатор Акции:&nbsp;
+        <select name="aInitiator" id="aInitiator" required class="gp">
+            <option value="">Выберите инициатора</option>
+            <option value="TM">TM</option>
+            <option value="FM">FM</option>
+            <option value="SM">SM</option>
+        </select>
+    </label>
+
+    <label for="aType">Тип акции:&nbsp;
+        <select name="aType" id="aType" required class="gp">
+            <option value="">Тип акции</option>
+            <option value="CTPR">CTPR</option>
+            <option value="LIVE">LIVE</option>
+            <option value="TRG">TRG</option>
+            <option value="LIVE Товарный">LIVE Товарный</option>
+            <option value="Разовая для Брендов">Разовая для Брендов</option>
+            <option value="Разовая для GCAS">Разовая для GCAS</option>
+            <option value="Контрактная для Брендов">Контрактная для Брендов</option>
+            <option value="Контрактная для GCAS">Контрактная для GCAS</option>
+        </select>
+    </label>
+
+    <label for="aTypeRange">Тип акции(лок.):&nbsp;
+        <select name="aTypeRange" id="aTypeRange" required class="gp">
+            <option value="">Тип акции(лок.)</option>
+            <option value="Национальная">Национальная</option>
+            <option value="Локальная">Локальная</option>
+            <option value="Национальная РАСПРОДАЖА">Национальная РАСПРОДАЖА</option>
+            <option value="Локальная РАСПРОДАЖА">Локальная РАСПРОДАЖА</option>
+        </select>
+    </label>
+
+    <label for="budget">Выберите измерение:&nbsp;
+        <select name="budget" id="budget" required class="gp">
+            <option value="">Выбирите единици</option>
+            <option value="ШТ">ШТ</option>
+            <option value="UAH">UAH</option>
+        </select>
+    </label>
+
+    <label for="budgetVal">Бюджет(числ.):&nbsp;
+        <input type="number" min="0" name="budgetVal" id="budgetVal" required class="gp"/>
+    </label>
+
+    <label for="discount">Скидка(%):&nbsp;
+        <input type="number" min="0" name="discount" id="discount" required class="gp"/>
+    </label>
+
+    <label for="cbf">Кто подтверждает Изменения Бюджета Филиала:&nbsp;
+        <select name="cbf" id="cbf" required class="gp">
+            <option value="">type</option>
+            <option value="Трейд маркетолог">Трейд маркетолог</option>
+            <option value="FM">FM</option>
+            <option value="SM">SM</option>
+        </select>
+    </label>
+
+    <label for="cbt">Кто подтверждает Изменения Бюджета ТТ:&nbsp;
+        <select name="cbt" id="cbt" required class="gp">
+            <option value="">type</option>
+            <option value="Трейд маркетолог">Трейд маркетолог</option>
+            <option value="FM">FM</option>
+            <option value="SM">SM</option>
+        </select>
+    </label>
+
+    <label for="cbc">Кто подтверждает Добавление/Удаление CSKU:&nbsp;
+        <select name="cbc" id="cbc" required class="gp">
+            <option value="">type</option>
+            <option value="Трейд маркетолог">Трейд маркетолог</option>
+            <option value="FM">FM</option>
+            <option value="SM">SM</option>
+        </select>
+    </label>
+
+
+    <label for="mn">Выберите почту менеджера:
+        <select name="mn" id="mn" required class="gp">
+
+        </select>
+    </label>
+
+    <label for="pr">Выберите продукт:
+        <select name="pr" id="pr" required class="gp">
+
+        </select>
+    </label>
+
+    <label for="mr">Выберите марку:
+        <select name="mr" id="mr" required class="gp">
+
+        </select>
+    </label>
+
+</form>
+
+<div class="wrapper" id="sbm">
+    <span class="wave-btn">
+        <span class="wave-btn__text">Отправить</span>
+        <span class="wave-btn__waves"></span>
+    </span>
+</div>
+
+<table id="tb">
+
+</table>
 
 <script src="js.js"></script>
 </body>

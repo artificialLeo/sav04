@@ -28,13 +28,15 @@ pool.getConnection(error => {
     console.log("Successfully connected to the database.");
 });
 
-app.get("/mail", function(req, res){
+// Managers mail
+app.get("/form", function(req, res){
     pool.query("SELECT Distinct TradeMarketMail FROM tbl", function(err, data) {
         if(err) return console.log(err);
         res.send(data);
     });
 });
 
+// Prod name
 app.post("/prod", urlencodedParser, function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const mail = req.body.mail;
@@ -45,7 +47,31 @@ app.post("/prod", urlencodedParser, function (req, res) {
     });
 });
 
-// app.post("/create", urlencodedParser, function (req, res) {
+// Mark name
+app.post("/mark", urlencodedParser, function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const mail = req.body.mail;
+
+    pool.query("SELECT Distinct ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
+        if(err) return console.log(err);
+        res.send(data);
+    });
+});
+
+// Build Table
+app.post("/tbl", urlencodedParser, function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const mail = req.body.mail;
+
+    pool.query("SELECT Distinct ProdName FROM tbl Where TradeMarketMail = ?", [mail], function(err, data) {
+        if(err) return console.log(err);
+        res.send(data);
+    });
+});
+
+// Routed insert and mail (optional)
+
+// app.post("/res", urlencodedParser, function (req, res) {
 //
 //     if(!req.body) return res.sendStatus(400);
 //     const name = req.body.name;
