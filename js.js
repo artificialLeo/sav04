@@ -200,7 +200,7 @@ document.getElementById('sbm').onclick = function () {
         checkDate()
     ) {
         postResult(resultOrdersArray);
-        console.log(resultOrdersArray);
+        location.href = "http://localhost:63342/sav04/res.html";
     } else {
         alert(
             "Все поля формы должны быть заполнены! \n\n" +

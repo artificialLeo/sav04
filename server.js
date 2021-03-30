@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const cors = require("cors");
+const nodemailer = require('nodemailer');
 
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -73,7 +74,6 @@ app.post("/tbl", urlencodedParser, function (req, res) {
 });
 
 // Routed insert and mail (optional)
-
 app.post("/res", urlencodedParser, function (req, res) {
 
     if(!req.body) return res.sendStatus(400);
@@ -94,43 +94,161 @@ app.post("/res", urlencodedParser, function (req, res) {
     const TradeMarketMail = req.body.TradeMarketMail;
     const ProdName = req.body.ProdName;
     const MarkName = req.body.MarkName;
+    // Array
     const order = req.body.order;
 
-    console.log(order);
-    console.log(actionType);
+    pool.query("INSERT INTO res (senderMail, senderFIO, startDate, finishDate, actionComment, actionInitiator, actionType, actionLocal, budgetQuantity, budgetSize, discount, budgetFilial, budgetTT, addRemoveCSKU, TradeMarketMail, ProdName, MarkName) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              [senderMail, senderFIO, startDate, finishDate, actionComment, actionInitiator, actionType, actionLocal, budgetQuantity, budgetSize, discount, budgetFilial, budgetTT, addRemoveCSKU, TradeMarketMail, ProdName, MarkName],
+        function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/res.html");
+    })
 
-    switch (actionType) {
-        case "CTPR":
-            console.log("CTPR QUERY");
-            break;
-        case "LIVE":
-            console.log("LIVE QUERY");
-            break;
-        case "TRG":
-            console.log("TRG QUERY");
-            break;
-        case "LIVE Товарный":
-            console.log("LIVE Товарный QUERY");
-            break;
-        case "Разовая для Брендов":
-            console.log("Разовая для Брендов QUERY");
-            break;
-        case "Разовая для GCAS":
-            console.log("Разовая для GCAS QUERY");
-            break;
-        case "Контрактная для Брендов":
-            console.log("Контрактная для Брендов QUERY");
-            break;
-        case "Контрактная для GCAS":
-            console.log("Контрактная для GCAS QUERY");
-            break;
-        default:
-            console.log("Nothing found");
-            res.sendStatus(400);
-    }
+        switch (actionType) {
+            // CSKUID   (id auto)
+            case "CTPR":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.CSKUID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            // CSKUID   (id auto)
+            case "LIVE":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.CSKUID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            // ProdID   (id auto)
+            case "TRG":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.ProdID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            // CSKUID   (id auto)
+            case "LIVE Товарный":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.CSKUID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });            break;
+            // ProdID   (id auto)
+            case "Разовая для Брендов":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.ProdID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            //ItemID (id auto)
+            case "Разовая для GCAS":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.ItemID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            // ProdID   (id auto)
+            case "Контрактная для Брендов":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.ProdID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            //ItemID (id auto)
+            case "Контрактная для GCAS":
+                order.map(i => {
+                    pool.query("INSERT INTO ord (ID, OrderID) VALUES (?, (SELECT MAX(OrderID) AS OrderID FROM res))", [i.ItemID], function(err, data) {
+                        if(err) return console.log(err);
+                    });
+                });
+                break;
+            default:
+                res.sendStatus(400);
+        }
 
-    // pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
-    //     if(err) return console.log(err);
-    //     res.redirect("/");
-    // });
+
+
+    pool.query("SELECT MAX(OrderID) AS OrderID FROM res", function(err, data) {
+        if(err) return console.log(err);
+
+        sendEmail(
+            `<h1>Номер заказа: ${data[0].OrderID}</h1>  <br>` +
+            `<b>Почта отправителя</b>: ${senderMail} <br>` +
+            `<b>ФИО отправителя</b>: ${senderFIO} <br>` +
+            `<b>Дата начала акции</b>: ${startDate} <br>` +
+            `<b>Дата конца акции</b>: ${finishDate} <br>` +
+            `<b>Комментарий к акции</b>: ${actionComment} <br>` +
+            `<b>Инициатор акции</b>: ${actionInitiator} <br>` +
+            `<b>Тип акции</b>: ${actionType} <br>` +
+            `<b>Тип акции(лок.)</b>: ${actionLocal} <br>` +
+            `<b>Измерение бюджета</b>: ${budgetQuantity} <br>` +
+            `<b>Бюджет(числ.)</b>: ${budgetSize} <br>` +
+            `<b>Скидка(%)</b>: ${discount} <br>` +
+            `<b>Кто подтверждает Изменения Бюджета Филиала</b>: ${budgetFilial} <br>` +
+            `<b>Кто подтверждает Изменения Бюджета ТТ</b>: ${budgetTT} <br>` +
+            `<b>Кто подтверждает Добавление/Удаление CSKU</b>: ${addRemoveCSKU} <br>` +
+            `<b>Почта менеджера</b>: ${TradeMarketMail} <br>` +
+            `<b>Продукт</b>: ${ProdName} <br>` +
+            `<b>Марка</b>: ${MarkName} <br>` +
+            `<h2>Заказы:</h2> <br>` +
+            `<hr><hr>` +
+            `<table style="border-collapse: collapse;" >` +
+            `<tr>` +
+            `<th style="border: 1px solid #000">ItemID</th>` +
+            `<th style="border: 1px solid #000">SortNO</th>` +
+            `<th style="border: 1px solid #000">CSKUID</th>` +
+            `<th style="border: 1px solid #000">CSKU</th>` +
+            `<th style="border: 1px solid #000">ItemName</th>` +
+            `<th style="border: 1px solid #000">ProdName</th>` +
+            `<th style="border: 1px solid #000">MarkName</th>` +
+            `<th style="border: 1px solid #000">ProdID</th>` +
+            `<th style="border: 1px solid #000">MarkID</th>` +
+            `<th style="border: 1px solid #000">CSKUName</th>` +
+            `<th style="border: 1px solid #000">Скидка(%)</th>` +
+            `</tr>` +
+            `${order.map(i =>
+                `<tr>` +
+                `<td style="border: 1px solid #000">${i.ItemID}</td>` +
+                `<td style="border: 1px solid #000">${i.SortNO}</td>` +
+                `<td style="border: 1px solid #000">${i.CSKUID}</td>` +
+                `<td style="border: 1px solid #000">${i.CSKU}</td>` +
+                `<td style="border: 1px solid #000">${i.ItemName}</td>` +
+                `<td style="border: 1px solid #000">${i.ProdName}</td>` +
+                `<td style="border: 1px solid #000">${i.MarkName}</td>` +
+                `<td style="border: 1px solid #000">${i.ProdID}</td>` +
+                `<td style="border: 1px solid #000">${i.MarkID}</td>` +
+                `<td style="border: 1px solid #000">${i.CSKUName}</td>` +
+                `<th style="border: 1px solid #000">${discount}</th>` +
+                `</tr>`
+            ).join('')}` +
+            `</table>`
+        );
+    });
+
 });
+
+async function sendEmail(text) {
+    let testAccount = await nodemailer.createTestAccount();
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        auth: {
+            user: 'horkovenko.k@gmail.com',
+            pass: 'Astana1@'
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: '"Геннадий Горковенко" <gorkovenko.g@asnova.com>',
+        to: ["horkovenko.k@gmail.com", "gorkovenko.g@asnova.com"],
+        subject: "SAVSERVICE Заявка на заведение промо акции",
+        html: text
+    });
+}

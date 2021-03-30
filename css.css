@@ -293,3 +293,12 @@ input {
     z-index: 99;
     cursor: pointer;
 }
+
+/*res page*/
+.res__head {
+    text-align: center;
+    font-size: 36px;
+    font-family: "Varela Round", "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: 500;
+    color: #00ff00;
+}
