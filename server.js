@@ -4,6 +4,10 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const nodemailer = require('nodemailer');
 
+const dotenv = require('dotenv');
+dotenv.config();
+const PORT = process.env.PORT || 4000;
+
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -11,7 +15,7 @@ app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.listen(4000, () => {
+app.listen(PORT, () => {
     console.log("Server is running on port 4000.");
 });
 
@@ -247,7 +251,7 @@ async function sendEmail(text) {
 
     let info = await transporter.sendMail({
         from: '"Геннадий Горковенко" <gorkovenko.g@asnova.com>',
-        to: ["horkovenko.k@gmail.com", "gorkovenko.g@asnova.com"],
+        to: ["gorkovenko.g@asnova.com"],
         subject: "SAVSERVICE Заявка на заведение промо акции",
         html: text
     });
