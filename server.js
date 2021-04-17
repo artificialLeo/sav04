@@ -5,6 +5,9 @@ const cors = require("cors");
 const nodemailer = require('nodemailer');
 
 const dotenv = require('dotenv');
+
+console.log(process.env)
+
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
